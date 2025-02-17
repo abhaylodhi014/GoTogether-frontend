@@ -7,7 +7,7 @@ import {
 import './App.css'
 import Alert from './components/Alert';
 import Navbar from './components/Navbar';
-import Auth from './components/auth';
+import Auth from './components/Auth';
 import CreateRide from './components/CreateRide';
 import Home from './components/Home';
 import Chat from './components/Chat';
