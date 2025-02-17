@@ -1,8 +1,7 @@
 import axios from 'axios';
 import {getAccessToken} from "../utils/common.utils.js"
 import {API_NOTIFICATION_MESSAGES , SERVICE_URLS}  from '../constants/config';
-const API_URL = 'https://gotogether-64ny.onrender.com';
-
+const API_URL = `${process.env.VITE_APP_API_URL}/api`
 //ek comman api bana rahe hai
 // ✅ Create axios instance and store it in a variable
 const axiosInstance = axios.create({
