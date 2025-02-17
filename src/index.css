@@ -1,0 +1,277 @@
+@import "tailwindcss";
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+
+
+body{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+html{
+  overflow-x: hidden;
+}
+
+:root{
+  --purple-600: #9333ea;
+  --purple-700: #6d28d9;
+  --bg-2: #0c0c0c;
+}
+
+
+.navLink {
+  color: #fff;
+  text-decoration: none;
+  position: relative;
+  transition: ease-in 0.3s;
+}
+
+.navLink::after {
+  position: absolute;
+  content: "";
+  width: 0%;
+  transition: ease-in 0.3s;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  background-color: var(--purple-600);
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+.navLink:hover {
+  color: var(--purple-600);
+}
+
+.navLink.active::after {
+  width: 100%;
+}
+
+.navLink.active {
+  color: var(--purple-600);
+}
+
+
+.sp-text{
+  color: var(--purple-600);
+}
+
+.btnNormal{
+  padding: 10px;
+  min-width: 130px;
+  background-color: var(--purple-600);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: ease-in .3s;
+}
+
+.btnNormal:hover{
+  background-color: var(--purple-700);
+}
+
+
+.btnWhite{
+  padding: 10px;
+  min-width: 130px;
+  background-color: #f4f4f4;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: ease-in .3s;
+}
+
+.btnWhite:hover{
+  background-color: #fff;
+}
+
+.blogsCon{
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-gap: 15px;
+  gap: 15px;
+}
+
+.blogsCon .blog{
+  width: 300px;
+  padding: 10px;
+  height: 300px;
+  cursor: pointer;
+  transition: ease-in .3s;
+  background-color: var(--bg-2);
+  border-radius: 10px;
+}
+.blogsCon .blog:hover{
+ transform: translateY(-3%);
+}
+
+.inputBox{
+  display: flex;
+  margin-top: 5px;
+  align-items: center;
+  background-color: #0c0c0c;
+  border-radius: 5px;
+  border: 1px solid rgb(32, 32, 32);
+}
+.inputBox input{
+  flex: 1;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.inputBox textarea{
+  flex: 1;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  padding: 10px;
+  min-height: 100px;
+  resize: vertical;
+  border-radius: 5px;
+  color: #fff;
+}
+
+svg{
+  color: #fff !important;
+}
+
+/* for input field */
+.input {
+  border: none;
+  outline: none;
+  border-radius: 15px;
+  padding: 13px;
+  background-color: #ccc;
+  box-shadow: inset 2px 3px 5px rgba(0,0,0,0.3);
+  transition: 300ms ease-in-out;
+}
+
+.input:focus {
+  background-color: rgb(210, 210, 210);
+  transform: scale(1.05);
+  box-shadow: 13px 13px 100px #969696,
+             -13px -13px 100px #cbcbcb;
+}
+
+
+/* for button */
+.button {
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+  padding-block: 0.5rem;
+  padding-inline: 1.25rem;
+  background-color: rgb(43, 154, 228);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffff;
+  gap: 10px;
+  font-weight: bold;
+  border: 3px solid #ffffff4d;
+  outline: none;
+  overflow: hidden;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  border-color: #fff9;
+}
+
+.button:hover .icon {
+  transform: translate(4px);
+}
+
+.button:hover::before {
+  animation: shine 1.5s ease-out infinite;
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100%;
+  background-image: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0) 70%
+  );
+  top: 0;
+  left: -100px;
+  opacity: 0.6;
+}
+
+@keyframes shine {
+  0% {
+    left: -100px;
+  }
+
+  60% {
+    left: 100%;
+  }
+
+  to {
+    left: 100%;
+  }
+}
+
+/* for backgound home */
+.homebg {
+  background: url("/map.jpg");
+  /* background-size: cover; */
+  /* background-position: center; */
+  /* background-attachment: fixed;  */
+}
+
+/* for backgound home */
+.chatbg {
+  background: url("/chat-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  /* background-attachment: fixed;  */
+}
+
+button{
+cursor: pointer;
+}

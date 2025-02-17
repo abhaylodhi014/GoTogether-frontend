@@ -1,0 +1,6 @@
+for backend 
+npm install express mongoose dotenv cors body-parser
+
+
+fronted 
+npm install @react-google-maps/api
