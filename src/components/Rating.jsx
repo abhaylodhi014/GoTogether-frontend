@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import API from '../service/api';
+import { useNavigate } from "react-router-dom";
 const Rating = ({showAlert}) => {
+    const navigate = useNavigate();
   const { username } = useParams();
   const ratedBy = sessionStorage.getItem('username');
   const [userRating, setUserRating] = useState(5);
@@ -17,6 +19,7 @@ const Rating = ({showAlert}) => {
     if (response.isSuccess) {
       setIsSubmitted(true);
       showAlert('Rating submitted successfully', 'success');
+      navigate('/');
     } else {
       showAlert('Failed to submit rating', 'error');
     }
