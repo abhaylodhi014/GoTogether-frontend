@@ -25,67 +25,67 @@ export default function Auth({showAlert}) {
 
 
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (!email.endsWith("@iiti.ac.in")) {
-  //     setError("Only IIT Indore email addresses are allowed.");
-  //     showAlert(error , "error");
-  //     return;
-  //   }
-  //   setError("Authentication not implemented. Use Google Login.");
-  //   showAlert(error , "error");
-  // };
-
-   // Login function
-   const loginUser = async () => {
-    try {
-      const response = await API.userLogin({ email, password });
-      
-      // Store tokens in sessionStorage
-      sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
-      sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
-      sessionStorage.setItem('username', response.data.username);
-      sessionStorage.setItem('email', response.data.email);
-
-      setError("");
-      setIsAuthenticated(true);  // Trigger redirection
-      navigate('/')
-    } catch (error) {
-        setError(error.response?.data?.message || "Login failed !! try again.");
-        showAlert("Login failed !! try again." , 'error')
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email.endsWith("@iiti.ac.in")) {
+      setError("Only IIT Indore email addresses are allowed.");
+      showAlert(error , "error");
+      return;
     }
+    setError("Authentication not implemented. Use Google Login.");
+    showAlert(error , "error");
   };
 
-    // Signup function
-    const signupUser = async () => {
-      try {
-        const response = await API.userSignup({ username, email, password });
+  //  // Login function
+  //  const loginUser = async () => {
+  //   try {
+  //     const response = await API.userLogin({ email, password });
+      
+  //     // Store tokens in sessionStorage
+  //     sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
+  //     sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+  //     sessionStorage.setItem('username', response.data.username);
+  //     sessionStorage.setItem('email', response.data.email);
+
+  //     setError("");
+  //     setIsAuthenticated(true);  // Trigger redirection
+  //     navigate('/')
+  //   } catch (error) {
+  //       setError(error.response?.data?.message || "Login failed !! try again.");
+  //       showAlert("Login failed !! try again." , 'error')
+  //   }
+  // };
+
+  //   // Signup function
+  //   const signupUser = async () => {
+  //     try {
+  //       const response = await API.userSignup({ username, email, password });
         
   
-        // Store tokens in sessionStorage
-        sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
-        sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
-        sessionStorage.setItem('username', response.data.username);
-        sessionStorage.setItem('email', response.data.email);
+  //       // Store tokens in sessionStorage
+  //       sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
+  //       sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+  //       sessionStorage.setItem('username', response.data.username);
+  //       sessionStorage.setItem('email', response.data.email);
   
-        setError("");
-        setIsAuthenticated(true);  // Trigger redirection
-        navigate('/')
-      } catch (error) {
-        showAlert("signup failed !! try again." , 'error')
-        setError(error.response?.data?.message || "signup failed !! try again.")
-      }
-    };
+  //       setError("");
+  //       setIsAuthenticated(true);  // Trigger redirection
+  //       navigate('/')
+  //     } catch (error) {
+  //       showAlert("signup failed !! try again." , 'error')
+  //       setError(error.response?.data?.message || "signup failed !! try again.")
+  //     }
+  //   };
   
-    // Form submission handler
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      if (isLogin) {
-        await loginUser();
-      } else {
-        await signupUser();
-      }
-    };
+  //   // Form submission handler
+  //   const handleSubmit = async (e) => {
+  //     e.preventDefault();
+  //     if (isLogin) {
+  //       await loginUser();
+  //     } else {
+  //       await signupUser();
+  //     }
+  //   };
 
   const handleGoogleAuth = async () => {
     try {
