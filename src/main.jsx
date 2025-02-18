@@ -1,13 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import ErrorBoundary from './utils/ErrorBoundary'; // Import the Error Boundary
+import ErrorBoundary from './ErrorBoundary';
 
-// React.StrictMode is removed for production build to avoid performance impact
-ReactDOM.render(
+// Use createRoot for React 18+ rendering
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
   <ErrorBoundary>
     <App />
-  </ErrorBoundary>,
-  document.getElementById('root')
+  </ErrorBoundary>
 );
