@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import API from '../service/api';
 
 const RideCard = ({ ride }) => {
+
+//format time from 24 hr system to am/pm system  
   const formatTime = (time) => {
     const [hours, minutes] = time.split(':');
     const h = parseInt(hours);
@@ -19,6 +21,8 @@ const RideCard = ({ ride }) => {
   useEffect(() => {
     if (!username) return;
 
+
+//fetch rating of that rideowner
     const fetchRating = async () => {
       setLoading(true);
       try {
@@ -46,7 +50,7 @@ const RideCard = ({ ride }) => {
         <div className="flex items-center gap-3">
           <div className="font-bold text-xl text-gray-800">{ride.username}</div>
           <p className='ml-3'>
-            {loading ? 'Loading...' : error ? 'Error' : typeof rating === 'number' ? `${rating}⭐` : 'No Rating'}
+            {loading ? 'Loading...' : error ? 'Error' : typeof rating === 'string' ? `${rating}⭐` : 'No Rating'}
           </p>
         </div>
         <div className="text-gray-500 text-sm">{formattedDate}</div>

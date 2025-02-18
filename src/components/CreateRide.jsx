@@ -50,6 +50,7 @@ export default function CreateRide({ showAlert }) {
     }
 
     try {
+//create ride api call
       let response = await API.createRide(ride);
       if (response.isSuccess) {
         showAlert("Ride Created Successfully", "success");

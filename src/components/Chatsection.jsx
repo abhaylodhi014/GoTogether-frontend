@@ -15,7 +15,7 @@ function ChatSection() {
   };
 
   useEffect(() => {
-    // Set current user from sessionStorage once component is mounted
+    // Set current user from sessionStorage 
     const storedUsername = sessionStorage.getItem('username');
     if (storedUsername) {
       setCurrentUser(storedUsername);
@@ -25,31 +25,34 @@ function ChatSection() {
   }, []);
 
   useEffect(() => {
-    if (currentUser === null) {
-      // Navigate to auth page if there's no currentUser, wrapped inside useEffect
-      navigate('/auth');
-      return;
-    }
+   
 
+//fetch all replies 
     const fetchReplies = async () => {
       const response = await API.getReplies();
       if (response.isSuccess) {
         const replies = response.data;
+//filter those replies in which currentuser are sender or receiver
         const userReplies = replies.filter(
           (reply) => reply.sender === currentUser || reply.receiver === currentUser
         );
         const chatsMap = new Map();
 
         userReplies.forEach((reply) => {
+// now separete these reply as a currentuser is sender or receiver          
           const otherPerson = reply.sender === currentUser ? reply.receiver : reply.sender;
+
+ //if the person is not the previous chat member then make   a new chat with the latestdate  
           if (!chatsMap.has(otherPerson)) {
             chatsMap.set(otherPerson, {
               name: otherPerson,
               latestDate: new Date(reply.date),
             });
           } else {
+//  if person is already in the chat          
             const existingChat = chatsMap.get(otherPerson);
             if (new Date(reply.date) > existingChat.latestDate) {
+ //if current reply date si greater then existing latest date then update the lastestdate in chatmap             
               chatsMap.set(otherPerson, {
                 ...existingChat,
                 latestDate: new Date(reply.date),
@@ -58,6 +61,7 @@ function ChatSection() {
           }
         });
 
+// function that convert the map into array and sort the reply based on latestdate
         const chatArray = Array.from(chatsMap.values()).sort(
           (a, b) => b.latestDate - a.latestDate
         );
@@ -67,6 +71,7 @@ function ChatSection() {
     };
 
     if (currentUser) {
+//if current user exit then call all replies in every 3 sec for making real-time chat
       fetchReplies();
       const interval = setInterval(fetchReplies, 3000);
       return () => clearInterval(interval);
@@ -74,6 +79,7 @@ function ChatSection() {
   }, [currentUser, navigate]);
 
   if (!currentUser) {
+//if current user not exit then ask for signin/signup     
     return (
       <div className='bg-gray-100 p-4 rounded-lg shadow-md mx-auto flex justify-center items-center min-h-screen'>
         <div className="shadow-lg p-4 my-auto bg-gray-300 rounded-2xl text-center">
@@ -101,9 +107,10 @@ function ChatSection() {
   return (
     <div className="bg-gray-100 p-4 rounded-lg shadow-md mx-auto flex-col max-w-4xl justify-center items-center min-h-screen">
       <h2 className="text-2xl font-bold mb-4">Chats</h2>
-
+{/* check if the conversation are not start */}
       {conversations.length === 0 && <p className="text-gray-500">No conversations yet.</p>}
       {conversations.map((chat) => (
+//show conversion        
         <div
           key={chat.name}
           className="p-3 my-4 input cursor-pointer hover:bg-gray-200 rounded transition"

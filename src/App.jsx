@@ -20,6 +20,7 @@ const Rating = lazy(() => import('./components/Rating'));
 function App() {
   const [alert, setAlert] = useState(null);
 
+  //show alert for 2.5 sec
   const showAlert = (message, type) => {
     setAlert({
       msg: message,
@@ -27,7 +28,7 @@ function App() {
     });
     setTimeout(() => {
       setAlert(null);
-    }, 2000);
+    }, 2500);
   };
 
   return (

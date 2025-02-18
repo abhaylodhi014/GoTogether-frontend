@@ -20,7 +20,7 @@ const Navbar = ({ showAlert }) => {
     }
   }, []);
 
-  // Fetch notifications related to the current user (unique other persons)
+//fetch all replies and set the notification this show how many user reply to your ride then you can chat with these user and share your ride
   useEffect(() => {
     const fetchReplies = async () => {
       if (!userName) {
@@ -32,7 +32,7 @@ const Navbar = ({ showAlert }) => {
         if (response.isSuccess) {
           const replies = response.data;
 
-          // Extract unique other persons
+  // Extract unique other persons in all replies in which  currentuser exit as a sender or receiver
           const otherPersons = new Set();
 
           replies.forEach((reply) => {
@@ -58,6 +58,8 @@ const Navbar = ({ showAlert }) => {
     return () => clearInterval(interval);
   }, [userName, showAlert]);
 
+
+  //set togglemenu based on screensize
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (

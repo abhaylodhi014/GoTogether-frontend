@@ -7,6 +7,7 @@ import 'leaflet-routing-machine';
 import 'leaflet/dist/leaflet.css';
 
 export default function HomePage({ showAlert }) {
+  //state variable to set and get data
   const [startPoint, setStartPoint] = useState('');
   const [endPoint, setEndPoint] = useState('');
   const [userLocation, setUserLocation] = useState(null);
@@ -15,14 +16,17 @@ export default function HomePage({ showAlert }) {
   const [endCoords, setEndCoords] = useState(null);
   const [routingControl, setRoutingControl] = useState(null);
   const navigate = useNavigate();
+  //fetch username from sessionstorage
   const username = sessionStorage.getItem('username');
 
   useEffect(() => {
+  //fetch user current location   
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         setUserLocation([latitude, longitude]);
-        setStartCoords([latitude, longitude]); // Set initial starting point as user's location
+        setStartCoords([latitude, longitude]);
+         // Set initial starting point as user's location
       },
       (error) => {
         console.error('Error fetching location:', error);
@@ -31,6 +35,7 @@ export default function HomePage({ showAlert }) {
     );
   }, []);
 
+// function to get coordinates from place name and update the usestate of coordinate   
   const getCoordinates = async (place, setCoordinates) => {
     try {
       const response = await fetch(
@@ -50,19 +55,21 @@ export default function HomePage({ showAlert }) {
     }
   };
 
+  //when user click on search ride then we get coordinates and we route between starting and ending point 
   const handleSearch = async () => {
     if (!map) return;
     if (startPoint.trim() === '' || endPoint.trim() === '') {
       showAlert('Please enter both starting point and destination.');
       return;
     }
-
+//getting coordinates
     if (startPoint.trim() !== '') await getCoordinates(startPoint, setStartCoords);
     await getCoordinates(endPoint, setEndCoords);
   };
 
+//if we have startcoordinates and endcoordinates then remove previous route and draw new route
   useEffect(() => {
-    if (map && startCoords && endCoords) {
+ if (map && startCoords && endCoords) {
       if (routingControl) {
         map.removeControl(routingControl);
       }
@@ -72,6 +79,8 @@ export default function HomePage({ showAlert }) {
         routeWhileDragging: true,
       }).addTo(map);
 
+
+// adjust map view to show whole route
       newRoutingControl.on('routesfound', function (e) {
         const route = e.routes[0];
         const bounds = L.latLngBounds(route.coordinates);
@@ -82,6 +91,8 @@ export default function HomePage({ showAlert }) {
     }
   }, [startCoords, endCoords, map]);
 
+
+//function to handle marker for current location and endtered locations  
   function Markers() {
     const map = useMap();
 
@@ -158,6 +169,7 @@ export default function HomePage({ showAlert }) {
           </div>
         </div>
       ) : (
+        
         <div className="flex-col w-full justify-center items-center bg-gray-100 p-6 rounded-2xl shadow-lg">
           <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">Access Restricted</h1>
           <p className="text-gray-600 mb-6 text-center">

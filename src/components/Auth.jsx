@@ -22,16 +22,67 @@ export default function Auth({ showAlert }) {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!email.endsWith("@iiti.ac.in")) {
-      setError("Only IIT Indore email addresses are allowed.");
-      showAlert("Only IIT Indore email addresses are allowed.", "error");
-      return;
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (!email.endsWith("@iiti.ac.in")) {
+  //     setError("Only IIT Indore email addresses are allowed.");
+  //     showAlert("Only IIT Indore email addresses are allowed.", "error");
+  //     return;
+  //   }
+  //   setError("Authentication not implemented. Use Google Login.");
+  //   showAlert("Authentication not implemented. Use Google Login.", "error");
+  // };
+
+
+    //  I give this login and signup function because i google auth... is not working then you can access by email as well
+
+   const loginUser = async () => {
+    try {
+      const response = await API.userLogin({ email, password });
+      
+      // Store tokens in sessionStorage
+      sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
+      sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+      sessionStorage.setItem('username', response.data.username);
+      sessionStorage.setItem('email', response.data.email);
+
+      setError("");
+      setIsAuthenticated(true);  // Trigger redirection
+      navigate('/')
+    } catch (error) {
+        setError(error.response?.data?.message || "Login failed !! try again.");
+        showAlert("Login failed !! try again." , 'error')
     }
-    setError("Authentication not implemented. Use Google Login.");
-    showAlert("Authentication not implemented. Use Google Login.", "error");
   };
+    // Signup function
+    const signupUser = async () => {
+      try {
+        const response = await API.userSignup({ username, email, password });
+        
+  
+        // Store tokens in sessionStorage
+        sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
+        sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+        sessionStorage.setItem('username', response.data.username);
+        sessionStorage.setItem('email', response.data.email);
+  
+        setError("");
+        setIsAuthenticated(true);  // Trigger redirection
+        navigate('/')
+      } catch (error) {
+        showAlert("signup failed !! try again." , 'error')
+        setError(error.response?.data?.message || "signup failed !! try again.")
+      }
+    };
+    // Form submission handler
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (isLogin) {
+        await loginUser();
+      } else {
+        await signupUser();
+      }
+    };
 
   const handleGoogleAuth = async () => {
     try {
@@ -49,6 +100,7 @@ export default function Auth({ showAlert }) {
         photoURL: user.photoURL,
       });
 
+      
       // Store session storage safely inside useEffect
       useEffect(() => {
         sessionStorage.setItem("username", user.displayName);

@@ -3,6 +3,7 @@ import API from '../service/api';
 import { useParams } from 'react-router-dom';
 
 function Chat() {
+  //get currentuser from sessionstorage 
   const currentUser = sessionStorage.getItem('username');
   const { name } = useParams(); // Get other person's username from URL
   const chatName = name;
@@ -14,7 +15,8 @@ function Chat() {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      const response = await API.getAllChat(); // Fetch all messages
+      const response = await API.getAllChat(); 
+      // Fetch all messages
       if (response.isSuccess) {
         const allMessages = response.data;
 
@@ -34,6 +36,8 @@ function Chat() {
     return () => clearInterval(interval);
   }, [chatName, currentUser]);
 
+
+  //add new message
   const handleAddMessage = async () => {
     if (!newMessage.trim()) return;
 
@@ -54,10 +58,9 @@ function Chat() {
     if (!response.isSuccess) {
       console.error('Failed to send message:', response.error);
     }
-
     scrollToBottom();
   };
-
+//automatic scroll to bottom of chat
   const scrollToBottom = () => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };

@@ -16,6 +16,7 @@ const ContactUs = ({ showAlert }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    //....formdate for just not overlap with previous value
   };
 
   const handleSubmit = async (e) => {
@@ -41,7 +42,7 @@ const ContactUs = ({ showAlert }) => {
       // Navigate only after form submission is successful
       navigate('/');
     }
-  }, [formSubmitted, navigate]); // Run effect when formSubmitted changes
+  }, [formSubmitted, navigate]); 
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-400 to-gray-500 p-4">

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
 function Replies({ ride, showAlert }) {
-  const [currentUser, setCurrentUser] = useState(null); // Initially setting it to null
+  const [currentUser, setCurrentUser] = useState(null); 
   const [replies, setReplies] = useState([]);
   const [newReply, setNewReply] = useState('');
   const [editingReplyId, setEditingReplyId] = useState(null);
@@ -15,14 +15,17 @@ function Replies({ ride, showAlert }) {
   useEffect(() => {
     const storedUser = sessionStorage.getItem('username');
     setCurrentUser(storedUser); // Set the current user from sessionStorage
-  }, []); // This effect will run once when the component is mounted
+  }, []); 
 
   useEffect(() => {
+    if (!ride?._id) return; // Don't run if ride is not available
+    //fecth all replies of that particular ride
     const fetchReplies = async () => {
       const response = await API.getAllReplies(null, null, null, { params: { id: ride._id } });
       if (response.isSuccess) {
         setReplies(response.data);
 
+//check currntuser is same to ride owner or not
         if (currentUser !== ride.username) {
           setSelectedUser(ride.username);
         }
@@ -31,10 +34,13 @@ function Replies({ ride, showAlert }) {
 
     fetchReplies();
 
+//fetch replies in every 3 sec
     const interval = setInterval(fetchReplies, 3000);
     return () => clearInterval(interval);
-  }, [ride._id, currentUser, ride.username]);
+  }, [ride?._id, currentUser, ride?.username]);
 
+
+  //create new reply
   const handleAddReply = async () => {
     if (!newReply.trim()) {
       showAlert('Reply cannot be empty', 'warning');
@@ -60,6 +66,7 @@ function Replies({ ride, showAlert }) {
     }
   };
 
+//delete reply
   const handleDeleteReply = async (replyId) => {
     const response = await API.deleteReply({ id: replyId });
     if (response.isSuccess) {
@@ -70,6 +77,7 @@ function Replies({ ride, showAlert }) {
     }
   };
 
+// update reply
   const handleUpdateReply = async (replyId) => {
     const response = await API.updateReply({ id: replyId, text: editingText });
     if (response.isSuccess) {
@@ -84,6 +92,8 @@ function Replies({ ride, showAlert }) {
     }
   };
 
+
+// count how many unique user reply exit on that ride
   const uniqueUsers = Array.from(
     new Set(replies.map((reply) => (reply.sender === currentUser ? reply.receiver : reply.sender)))
   )
@@ -99,6 +109,8 @@ function Replies({ ride, showAlert }) {
     }))
     .sort((a, b) => b.lastReplyDate - a.lastReplyDate);
 
+
+//agar current user ride owner nahi hai tu  us ride ke reply ko filter karege as a sender or recevier    
   const filteredReplies = selectedUser
     ? replies.filter(
         (reply) =>
@@ -116,13 +128,16 @@ function Replies({ ride, showAlert }) {
 
   return (
     <div className="flex flex-col rounded-lg p-2 overflow-hidden">
+      
       {!selectedUser && (
+//if current user is ride owner then show all user that have reply on the paticular ride        
         <div className="space-y-2">
           {uniqueUsers.length === 0 && <p className="text-gray-500">No replies yet.</p>}
           {uniqueUsers.map((user) => (
             <div
               key={user.username}
               className="cursor-pointer p-2 border rounded-lg bg-gray-300 hover:bg-gray-400 flex"
+//IF current user click on a paticular user then show him that user chat              
               onClick={() => setSelectedUser(user.username)}
             >
               <FontAwesomeIcon icon={faUserCircle} className="text-2xl font-bold mr-2" />
@@ -132,7 +147,9 @@ function Replies({ ride, showAlert }) {
         </div>
       )}
 
+
       {selectedUser && (
+// jap rideowner or current user same na ho or JAB DONO SAME HO AUR RIDE OWNER LIST OF USER REPLY THAT RIDE MAI SE EK PER CLICK KARE TU USSE CHAT PER LE JAYE        
         <>
           <div className="flex justify-between items-center mb-2">
             {currentUser === ride.username && (
