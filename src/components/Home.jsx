@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import RideList from './RideList';
 import { useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet/dist/leaflet.css';
@@ -22,9 +22,11 @@ export default function HomePage({ showAlert }) {
       (position) => {
         const { latitude, longitude } = position.coords;
         setUserLocation([latitude, longitude]);
+        setStartCoords([latitude, longitude]); // Set initial starting point as user's location
       },
       (error) => {
         console.error('Error fetching location:', error);
+        showAlert('Unable to fetch your location.');
       }
     );
   }, []);
@@ -44,13 +46,13 @@ export default function HomePage({ showAlert }) {
       }
     } catch (error) {
       console.error('Geocoding error:', error);
+      showAlert('Failed to get location coordinates.');
     }
   };
 
   const handleSearch = async () => {
     if (!map) return;
-
-    await getCoordinates(startPoint, setStartCoords);
+    if (startPoint.trim() !== '') await getCoordinates(startPoint, setStartCoords);
     await getCoordinates(endPoint, setEndCoords);
   };
 
@@ -75,6 +77,36 @@ export default function HomePage({ showAlert }) {
     }
   }, [startCoords, endCoords, map]);
 
+  function Markers() {
+    const map = useMap();
+
+    useEffect(() => {
+      if (startCoords) {
+        map.setView(startCoords, 13);
+      }
+    }, [startCoords]);
+
+    return (
+      <>
+        {userLocation && (
+          <Marker position={userLocation}>
+            <Popup>You are here!</Popup>
+          </Marker>
+        )}
+        {startCoords && startPoint && (
+          <Marker position={startCoords}>
+            <Popup>Starting Point: {startPoint}</Popup>
+          </Marker>
+        )}
+        {endCoords && (
+          <Marker position={endCoords}>
+            <Popup>Destination: {endPoint}</Popup>
+          </Marker>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
       {username ? (
@@ -82,18 +114,16 @@ export default function HomePage({ showAlert }) {
           {userLocation && (
             <MapContainer
               center={userLocation}
-              zoom={10}
+              zoom={13}
               style={{ height: '60vh', width: '100vw' }}
               whenCreated={setMap}
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <Marker position={userLocation}>
-                <Popup>You are here!</Popup>
-              </Marker>
+              <Markers />
             </MapContainer>
           )}
 
-          <div className="absolute z-400  right-1 top-1 bg-white p-4 rounded-3xl shadow-lg w-52 md:w-65">
+          <div className="absolute z-400 right-1 top-1 bg-white p-4 rounded-3xl shadow-lg w-52 md:w-65">
             <h2 className="text-2xl font-bold mb-2 text-center text-gray-500">Find a Ride</h2>
             <input
               type="text"
