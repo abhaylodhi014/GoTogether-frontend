@@ -2,6 +2,9 @@ import React from 'react';
 
 function Alert(props) {
     const capitalize = (word) => {
+        if (!word) return '';  // Return empty string if word is undefined or null
+
+       
         if (word === "danger") {
             word = "error";
         }

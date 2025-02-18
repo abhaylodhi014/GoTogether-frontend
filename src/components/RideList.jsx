@@ -44,8 +44,8 @@ const RideList = ({ startPoint, destination }) => {
       rideDate >= currentDate &&
     
       // Mandatory filter based on props (startPoint and destination)
-      (!startPoint || ride.startPoint?.toLowerCase().includes(startPoint.toLowerCase())) &&
-      (!destination || ride.destination?.toLowerCase().includes(destination.toLowerCase())) &&
+      (!startPoint || (ride.startPoint?.toLowerCase() ?? '').includes(startPoint.toLowerCase())) &&
+      (!destination || (ride.destination?.toLowerCase() ?? '').includes(destination.toLowerCase())) &&
     
       // Additional filters based on user inputs
       (locationFilter === '' ||
