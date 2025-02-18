@@ -2,14 +2,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import API from '../service/api.js';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+
 function Replies({ ride, showAlert }) {
-  const currentUser = sessionStorage.getItem('username');
+  const [currentUser, setCurrentUser] = useState(null); // Initially setting it to null
   const [replies, setReplies] = useState([]);
   const [newReply, setNewReply] = useState('');
   const [editingReplyId, setEditingReplyId] = useState(null);
   const [editingText, setEditingText] = useState('');
-  const [selectedUser, setSelectedUser] = useState(null); // Track selected user for conversation view
+  const [selectedUser, setSelectedUser] = useState(null);
   const endOfMessagesRef = useRef(null);
+
+  useEffect(() => {
+    const storedUser = sessionStorage.getItem('username');
+    setCurrentUser(storedUser); // Set the current user from sessionStorage
+  }, []); // This effect will run once when the component is mounted
 
   useEffect(() => {
     const fetchReplies = async () => {
@@ -17,10 +23,9 @@ function Replies({ ride, showAlert }) {
       if (response.isSuccess) {
         setReplies(response.data);
 
-         // Automatically select ride owner if current user is not the ride owner
-      if (currentUser !== ride.username) {
-        setSelectedUser(ride.username);
-      }
+        if (currentUser !== ride.username) {
+          setSelectedUser(ride.username);
+        }
       }
     };
 
@@ -28,7 +33,7 @@ function Replies({ ride, showAlert }) {
 
     const interval = setInterval(fetchReplies, 3000);
     return () => clearInterval(interval);
-  }, [ride._id ,  currentUser, ride.username]);
+  }, [ride._id, currentUser, ride.username]);
 
   const handleAddReply = async () => {
     if (!newReply.trim()) {
@@ -39,7 +44,7 @@ function Replies({ ride, showAlert }) {
     const replyData = {
       rideId: ride._id,
       sender: currentUser,
-      receiver: selectedUser, // Send reply to selected user
+      receiver: selectedUser,
       username: currentUser,
       text: newReply,
       date: new Date(),
@@ -79,7 +84,6 @@ function Replies({ ride, showAlert }) {
     }
   };
 
-  // Get unique users who replied, sorted latest to oldest based on their last reply
   const uniqueUsers = Array.from(
     new Set(replies.map((reply) => (reply.sender === currentUser ? reply.receiver : reply.sender)))
   )
@@ -95,7 +99,6 @@ function Replies({ ride, showAlert }) {
     }))
     .sort((a, b) => b.lastReplyDate - a.lastReplyDate);
 
-  // Filter replies based on selected user
   const filteredReplies = selectedUser
     ? replies.filter(
         (reply) =>
@@ -104,7 +107,6 @@ function Replies({ ride, showAlert }) {
       )
     : [];
 
-  // Group messages by date
   const groupedReplies = filteredReplies.reduce((acc, reply) => {
     const dateKey = new Date(reply.date).toLocaleDateString();
     if (!acc[dateKey]) acc[dateKey] = [];
@@ -112,13 +114,9 @@ function Replies({ ride, showAlert }) {
     return acc;
   }, {});
 
-  //for owner of ride 
   return (
-    <div className="flex flex-col  rounded-lg p-2 overflow-hidden">
-
-      {/* User selection view only for ride owner*/}
-      {!selectedUser&& (
-
+    <div className="flex flex-col rounded-lg p-2 overflow-hidden">
+      {!selectedUser && (
         <div className="space-y-2">
           {uniqueUsers.length === 0 && <p className="text-gray-500">No replies yet.</p>}
           {uniqueUsers.map((user) => (
@@ -127,29 +125,26 @@ function Replies({ ride, showAlert }) {
               className="cursor-pointer p-2 border rounded-lg bg-gray-300 hover:bg-gray-400 flex"
               onClick={() => setSelectedUser(user.username)}
             >
-            <FontAwesomeIcon icon={faUserCircle} className='text-2xl font-bold mr-2' />
+              <FontAwesomeIcon icon={faUserCircle} className="text-2xl font-bold mr-2" />
               <p className="text-lg font-semibold">{user.username}</p>
             </div>
           ))}
         </div>
       )}
 
-      {/* Chat view */}
       {selectedUser && (
         <>
           <div className="flex justify-between items-center mb-2">
-          
-          {currentUser === ride.username && (
-            <button
-              className="text-blue-500 font-bold text-lg"
-              onClick={() => setSelectedUser(null)}
-            >
-              ← Back
-            </button>
-          )}
-          <p className="font-bold text-gray-500 text-lg ">{selectedUser}</p>
-        
-                </div>
+            {currentUser === ride.username && (
+              <button
+                className="text-blue-500 font-bold text-lg"
+                onClick={() => setSelectedUser(null)}
+              >
+                ← Back
+              </button>
+            )}
+            <p className="font-bold text-gray-500 text-lg ">{selectedUser}</p>
+          </div>
 
           <div className="flex-1 chatbg overflow-y-auto space-y-3 border">
             {filteredReplies.length === 0 && (
@@ -164,11 +159,11 @@ function Replies({ ride, showAlert }) {
                     key={reply._id}
                     className={`flex ${reply.sender === currentUser ? 'justify-end' : 'justify-start'}`}
                   >
-                  <div
-                    className={`p-1 px-4 my-1 rounded-lg ${
-                      reply.sender === currentUser
-                       ? 'bg-blue-500 text-white font-bold'
-                    : 'bg-gray-200 text-black font-bold'
+                    <div
+                      className={`p-1 px-4 my-1 rounded-lg ${
+                        reply.sender === currentUser
+                          ? 'bg-blue-500 text-white font-bold'
+                          : 'bg-gray-200 text-black font-bold'
                       }`}
                     >
                       <div className="flex gap-6">
@@ -233,7 +228,6 @@ function Replies({ ride, showAlert }) {
             <div ref={endOfMessagesRef} />
           </div>
 
-          {/* Input section */}
           <div className="p-2 bg-white border-t flex">
             <textarea
               className="flex-1 input"

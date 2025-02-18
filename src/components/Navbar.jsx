@@ -4,7 +4,7 @@ import { faUserCircle, faBars, faTimes, faComments } from "@fortawesome/free-sol
 import { Link, useLocation } from 'react-router-dom';
 import API from '../service/api';
 
-const Navbar = ({showAlert}) => {
+const Navbar = ({ showAlert }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState(0);
   const [userName, setUserName] = useState("");
@@ -23,10 +23,9 @@ const Navbar = ({showAlert}) => {
   // Fetch notifications related to the current user (unique other persons)
   useEffect(() => {
     const fetchReplies = async () => {
-      if (!userName){
-     
+      if (!userName) {
         return;
-      } 
+      }
 
       try {
         const response = await API.getReplies();
@@ -48,16 +47,16 @@ const Navbar = ({showAlert}) => {
         }
       } catch (error) {
         console.error("Failed to fetch replies:", error);
-        
+        showAlert('Error fetching notifications.');
       }
     };
 
     fetchReplies();
 
-    // Optional polling (every 5 seconds)
-    const interval = setInterval(fetchReplies, 5000);
+    // Optional polling (every 3 seconds)
+    const interval = setInterval(fetchReplies, 3000);
     return () => clearInterval(interval);
-  }, [userName]);
+  }, [userName, showAlert]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 

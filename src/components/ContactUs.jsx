@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../service/api';
-const ContactUs = ({showAlert}) => {
-const navigate = useNavigate();
 
+const ContactUs = ({ showAlert }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,6 +11,7 @@ const navigate = useNavigate();
   });
 
   const [status, setStatus] = useState('');
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,23 +21,27 @@ const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('Sending...');
-
-   try {
-    let response =  await API.contactUs(formData);
     
-      if(response.isSuccess){
-        showAlert("Form submitted successfully!" , "success")
-        navigate('/');
-       }
-       else{
-        showAlert("Form submission failed. Please try again." , 'info')
-       }
-   } catch (error) {
-        showAlert("An error occurred. Please check your internet connection." , "warning")
-   }
-
+    try {
+      let response = await API.contactUs(formData);
       
+      if (response.isSuccess) {
+        showAlert("Form submitted successfully!", "success");
+        setFormSubmitted(true); // Mark form as submitted
+      } else {
+        showAlert("Form submission failed. Please try again.", 'info');
+      }
+    } catch (error) {
+      showAlert("An error occurred. Please check your internet connection.", "warning");
+    }
   };
+
+  useEffect(() => {
+    if (formSubmitted) {
+      // Navigate only after form submission is successful
+      navigate('/');
+    }
+  }, [formSubmitted, navigate]); // Run effect when formSubmitted changes
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-400 to-gray-500 p-4">

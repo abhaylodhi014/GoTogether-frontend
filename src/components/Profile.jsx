@@ -10,6 +10,7 @@ const Profile = ({ showAlert }) => {
   const [userRides, setUserRides] = useState([]);
   const navigate = useNavigate();
   const [rating, setRating] = useState(null);
+
   const formatTime = (time) => {
     if (!time) return 'Invalid Time';
     const [hour, minute] = time.split(':');
@@ -42,7 +43,6 @@ const Profile = ({ showAlert }) => {
     };
 
     fetchRating();
-
     fetchRides();
   }, [username]);
 
@@ -99,7 +99,6 @@ const Profile = ({ showAlert }) => {
   };
 
   if (!username) {
-
     return (
       <div className="flex flex-col items-center justify-center w-full min-h-screen bg-gray-50 px-4">
         <h1 className="text-3xl font-semibold text-gray-800">You are not signed in!</h1>
@@ -133,9 +132,7 @@ const Profile = ({ showAlert }) => {
           <p className="text-gray-700">{email}</p>
           <div className="flex space-x-1"><p className="text-gray-700">{rating ||  "N/A"}</p>
           {renderStars()}
-            
           </div>
-          
           <button
             onClick={handleLogout}
             className=" text-blue-500 px-4 hover:text-blue-700 font-bold text-lg"

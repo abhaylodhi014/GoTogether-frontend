@@ -6,14 +6,31 @@ import { useNavigate } from 'react-router-dom';
 
 function ChatSection() {
   const navigate = useNavigate();
-  const currentUser = sessionStorage.getItem('username');
+  const [currentUser, setCurrentUser] = useState(null);
   const [conversations, setConversations] = useState([]);
 
   const handleChatClick = (chatName) => {
+    // Navigate inside useEffect or event handler to avoid errors
     navigate(`/chat/${chatName}`);
   };
 
   useEffect(() => {
+    // Set current user from sessionStorage once component is mounted
+    const storedUsername = sessionStorage.getItem('username');
+    if (storedUsername) {
+      setCurrentUser(storedUsername);
+    } else {
+      setCurrentUser(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentUser === null) {
+      // Navigate to auth page if there's no currentUser, wrapped inside useEffect
+      navigate('/auth');
+      return;
+    }
+
     const fetchReplies = async () => {
       const response = await API.getReplies();
       if (response.isSuccess) {
@@ -54,30 +71,29 @@ function ChatSection() {
       const interval = setInterval(fetchReplies, 3000);
       return () => clearInterval(interval);
     }
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   if (!currentUser) {
-  
     return (
-      <div className='bg-gray-100 p-4 rounded-lg shadow-md mx-auto flex  justify-center items-center min-h-screen'>
-      <div className="shadow-lg p-4 my-auto bg-gray-300 rounded-2xl  text-center">
-        <h2 className="text-2xl font-bold mb-4">Welcome to Chat</h2>
-        <p className="text-gray-600 mb-4">Please login or sign up to start chatting.</p>
-        <div className="flex space-x-4 justify-center">
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            onClick={() => navigate('/auth')}
-          >
-            Login
-          </button>
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            onClick={() => navigate('/auth')}
-          >
-            Signup
-          </button>
+      <div className='bg-gray-100 p-4 rounded-lg shadow-md mx-auto flex justify-center items-center min-h-screen'>
+        <div className="shadow-lg p-4 my-auto bg-gray-300 rounded-2xl text-center">
+          <h2 className="text-2xl font-bold mb-4">Welcome to Chat</h2>
+          <p className="text-gray-600 mb-4">Please login or sign up to start chatting.</p>
+          <div className="flex space-x-4 justify-center">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={() => navigate('/auth')}
+            >
+              Login
+            </button>
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              onClick={() => navigate('/auth')}
+            >
+              Signup
+            </button>
+          </div>
         </div>
-      </div>
       </div>
     );
   }

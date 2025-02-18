@@ -2,20 +2,32 @@ import { useState, useEffect } from 'react';
 import RideCard from './RideCard';
 import API from '../service/api';
 
-
 const RideList = ({ startPoint, destination }) => {
   const [locationFilter, setLocationFilter] = useState('');
   const [timeFilter, setTimeFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [rides, setRides] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      let response = await API.getAllRide();
-      if (response.isSuccess) {
-        setRides(response.data);
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await API.getAllRide();
+        if (response.isSuccess) {
+          setRides(response.data);
+        } else {
+          setError('Failed to fetch rides');
+        }
+      } catch (err) {
+        setError('Error fetching data');
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchData();
   }, []);
 
@@ -47,8 +59,7 @@ const RideList = ({ startPoint, destination }) => {
   });
 
   return (
-    <div className="p-4 bg-gray-200 ">
-     
+    <div className="p-4 bg-gray-200">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="flex flex-col">
           <label className="text-lg font-semibold text-gray-700 mb-2">Starting Location</label>
@@ -80,8 +91,11 @@ const RideList = ({ startPoint, destination }) => {
             className="border border-gray-400 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           />
         </div>
-   
-    </div>
+      </div>
+
+      {/* Loading and error handling */}
+      {loading && <div>Loading rides...</div>}
+      {error && <div className="text-red-500">{error}</div>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-6">
         {filteredRides.length > 0 ? (
@@ -91,11 +105,9 @@ const RideList = ({ startPoint, destination }) => {
             </div>
           ))
         ) : (
-          <div>No rides available</div>
+          !loading && <div>No rides available</div>
         )}
       </div>
-      
-      
     </div>
   );
 };

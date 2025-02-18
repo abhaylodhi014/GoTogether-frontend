@@ -52,6 +52,11 @@ export default function HomePage({ showAlert }) {
 
   const handleSearch = async () => {
     if (!map) return;
+    if (startPoint.trim() === '' || endPoint.trim() === '') {
+      showAlert('Please enter both starting point and destination.');
+      return;
+    }
+
     if (startPoint.trim() !== '') await getCoordinates(startPoint, setStartCoords);
     await getCoordinates(endPoint, setEndCoords);
   };
@@ -110,7 +115,7 @@ export default function HomePage({ showAlert }) {
   return (
     <>
       {username ? (
-        <div className="h-400px relative z-40">
+        <div className="h-[400px] relative z-40">
           {userLocation && (
             <MapContainer
               center={userLocation}

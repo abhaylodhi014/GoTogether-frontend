@@ -1,10 +1,13 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import ErrorBoundary from './utils/ErrorBoundary'; // Import the Error Boundary
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+// React.StrictMode is removed for production build to avoid performance impact
+ReactDOM.render(
+  <ErrorBoundary>
     <App />
-  </StrictMode>,
-)
+  </ErrorBoundary>,
+  document.getElementById('root')
+);
