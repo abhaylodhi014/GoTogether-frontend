@@ -74,6 +74,9 @@ export default function HomePage({ showAlert }) {
       const newRoutingControl = L.Routing.control({
         waypoints: [L.latLng(startCoords[0], startCoords[1]), L.latLng(endCoords[0], endCoords[1])],
         routeWhileDragging: true,
+        lineOptions: {
+          styles: [{ color: 'blue', weight: 8 }],
+        },
       }).addTo(map);
 // adjust map view to show whole route
       newRoutingControl.on('routesfound', function (e) {
@@ -152,7 +155,7 @@ export default function HomePage({ showAlert }) {
             <button
               onClick={handleSearch}
               className="button mx-auto"
-              disabled={!map}
+       
             >
               Search Ride
             </button>
