@@ -101,15 +101,14 @@ export default function Auth({ showAlert }) {
       });
 
       
-      // Store session storage safely inside useEffect
-      useEffect(() => {
+     
         sessionStorage.setItem("username", user.displayName);
         sessionStorage.setItem("email", user.email);
         sessionStorage.setItem("profilePhoto", user.photoURL);
         sessionStorage.setItem("accessToken", `Bearer ${response.data.accessToken}`);
         sessionStorage.setItem("refreshToken", `Bearer ${response.data.refreshToken}`);
         setIsAuthenticated(true);
-      }, [user, response]);
+            navigate('/')
     } catch (error) {
       setError("Error with Google Authentication: " + error.message);
       showAlert("Error with Google Authentication: " + error.message, "error");
